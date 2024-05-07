@@ -8,7 +8,10 @@ export const YearlySections = ({ yearlyBudget }) => {
             style={{ width: "100%", height: "100%" }}
             option={{
                 title: {
-                    text: `Used: $${yearlyBudget.used}  Available: $${yearlyBudget.available}`
+                    text: `Used: $${yearlyBudget.used}  Available: $${yearlyBudget.available}`,
+                    textStyle: {
+                        fontSize: 14
+                    },
                 },
                 tooltip: {
                     trigger: 'item'

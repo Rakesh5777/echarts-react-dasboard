@@ -51,7 +51,7 @@ export const Dashboard = () => {
                     <YearlySections yearlyBudget={yearlyBudget} />
                 </div>
             </div>
-            <div className="flex h-2/3 gap-2 py-2">
+            <div className="flex h-3/4 gap-2 py-2">
                 <div className="h-full w-full">
                     <MonthlyAccount monthlyDeveloperAccountData={monthlyDeveloperAccountData} />
                 </div>

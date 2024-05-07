@@ -1,24 +1,14 @@
-import React, { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
-import axiosInstance from "./../../../axiosInstance"
+import React, { useEffect, useState } from "react";
 
-export const MonthlyAccount = () => {
+
+export const MonthlyAccount = ({ monthlyDeveloperAccountData }) => {
     const [monthlyGraphData, setMonthlyGraphData] = useState();
     const [seriesData, setSeriesData] = useState();
     const [optionsData, setOptionsData] = useState();
 
     useEffect(() => {
-        const getMonthlyAccount = async () => {
-            try {
-                const response = await axiosInstance.get("/monthlyAccountWiseCost")
-                if (response.status === 200) {
-                    initialiseGraphData(response.data)
-                }
-            } catch (error) {
-                console.error(error)
-            }
-        }
-        getMonthlyAccount();
+        initialiseGraphData(monthlyDeveloperAccountData);
     }, [])
 
     const initialiseGraphData = (data) => {
@@ -32,7 +22,7 @@ export const MonthlyAccount = () => {
         }));
         setOptionsData(Object.keys(data.developersMonthWiseData).map((monthData) => {
             return {
-                title: { text: monthData.charAt(0).toUpperCase() + monthData.slice(1) },
+                title: { text: monthData },
                 series: data.developersMonthWiseData[monthData]
             }
         }));
@@ -46,13 +36,28 @@ export const MonthlyAccount = () => {
                     timeline: {
                         axisType: 'category',
                         autoPlay: true,
-                        playInterval: 3000,
-                        data: Object.keys(monthlyGraphData.developersMonthWiseData).map(monthData => monthData.charAt(0).toUpperCase() + monthData.slice(1, 3)),
+                        playInterval: 5000,
+                        data: Object.keys(monthlyGraphData.developersMonthWiseData).map(monthData => monthData),
                     },
                     title: {
                         subtext: 'Spending by developer',
                     },
-                    tooltip: {},
+                    tooltip: {
+                        // Trigger on mouse hover
+                        trigger: 'axis',
+                        // Customizing tooltip content
+                        formatter: function (params) {
+                            var tooltip = params[0].name + '<br/>';
+                            params.forEach(function (item) {
+                                // Check if value is not zero
+                                if (item.value !== 0) {
+                                    tooltip += '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + item.color + '"></span>' +
+                                        item.seriesName + ': ' + item.value + '<br/>';
+                                }
+                            });
+                            return tooltip;
+                        }
+                    },
                     calculable: true,
                     grid: {
                         top: 80,
@@ -66,7 +71,7 @@ export const MonthlyAccount = () => {
                     },
                     legend: {
                         right: 0,
-                        show: true
+                        show: false
                     },
                     xAxis: [
                         {

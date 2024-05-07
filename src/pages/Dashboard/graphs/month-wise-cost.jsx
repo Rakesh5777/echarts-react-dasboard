@@ -2,23 +2,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import ReactECharts from "echarts-for-react";
 import axiosInstance from "./../../../axiosInstance"
 
-export const MonthWiseCost = () => {
+export const MonthWiseCost = ({ mouthWiseCostData, totalBudget }) => {
     const [monthWiseCostGraphData, setMonthWiseCostGraphData] = useState();
     const [seriesData, setSeriesData] = useState();
     const [monthlyMaxLimit, setMonthlyMaxLimit] = useState();
 
     useEffect(() => {
-        const getMonthWiseCost = async () => {
-            try {
-                const response = await axiosInstance.get("/monthWiseCost")
-                if (response.status === 200) {
-                    initialiseGraphData(response.data)
-                }
-            } catch (error) {
-                console.error(error)
-            }
-        }
-        getMonthWiseCost();
+        initialiseGraphData(mouthWiseCostData)
     }, [])
 
     const initialiseGraphData = (data) => {
@@ -27,7 +17,7 @@ export const MonthWiseCost = () => {
             return {
                 type: "bar",
                 name: key,
-                data: data[key],
+                data: data[key.charAt(0).toLowerCase() + key.substring(1)],
                 color: index === 0 ? "#3ea8ff" : "#4aaeff7e",
                 stack: "A",
                 markLine: {
@@ -69,7 +59,7 @@ export const MonthWiseCost = () => {
             style={{ width: "100%", height: "100%" }}
             option={{
                 title: {
-                    text: 'Month wise budget',
+                    text: totalBudget ? 'Total budget $' + totalBudget : 'Monthly Cost',
                 },
                 tooltip: {
                     trigger: "axis",
